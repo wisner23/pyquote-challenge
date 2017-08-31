@@ -10,7 +10,9 @@ Python 3.5 is required.
     
     pip install -r requirements.txt
     python application.py
-
+    
+    # run test
+    python -m unittest -v tests.quote_service_test
 
 
 # Routes
