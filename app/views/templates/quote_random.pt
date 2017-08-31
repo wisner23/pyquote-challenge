@@ -1,0 +1,3 @@
+<ul>
+    <li>${sorted_number} - <i>${quote}</i></li>
+</ul>

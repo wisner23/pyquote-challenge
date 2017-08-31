@@ -1,0 +1,2 @@
+
+<li tal:repeat="item quotes" tal:content="item" />

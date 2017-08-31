@@ -1,36 +1,47 @@
-from resources.quotes import quotes
+import config
+import requests
+from app.common.api_exception import ApiException
 
 
 class QuoteService(object):
 
-    def __init__(self, randomizer):
+    def __init__(self, randomizer, request: requests):
         self.rdn = randomizer
+        self.request = request
 
-    @staticmethod
-    def get_quotes():
+    def get_quotes(self):
         """
-            Metodo no qual retorna uma lista de quotes
-            :return: array[]
-            """
-        return quotes
-
-    @staticmethod
-    def get_quote_by_number(number):
+        Metodo no qual realiza uma consulta na API de quotes e retorna uma lista de quotes
+        :return: array[]
         """
-            Metodo no qual recebe um numero como parametro e utiliza o mesmo como indice
-            para obter o resultado da lista quotes.
+        try:
+            return self.request.get(config.API_ENDPOINT).json()["quotes"]
+        except:
+            raise ApiException("API is not available: __get_quotes__")
 
-            :param number: int value
-            :return: a quote {}
-            """
-        return quotes[number]
+    def get_quote_by_number(self, number):
+        """
+        Metodo no qual recebe um numero como parametro e realiza uma consulta na API de quotes
+        passando o numero
+
+        :param number: number of requested quote
+        :return: a quote {}
+        """
+        try:
+            url = "{0}/{1}".format(config.API_ENDPOINT, number)
+            result = self.request.get(url)
+            return result.json()
+        except:
+            raise ApiException("API is not available: __get_quote_by_number__")
 
     def get_random_quote(self):
         """
-            Metodo no qual randomiza um inteiro do tamanho de quotes e utiliza o mesmo como indice
-            para obter um  da lista quotes.
+        Metodo no qual randomiza um inteiro do tamanho de quotes e utiliza o metodo get_quote_by_number
+        para obter um retorno
 
-            :param number: int value
-            :return: a quote {}
-            """
-        return self.get_quote_by_number(self.rdn(0, len(quotes) - 1))
+        :return: a quote {}
+        """
+        sorted_number = self.rdn(0, len(self.get_quotes()) - 1)
+        result = self.get_quote_by_number(sorted_number)
+
+        return {"sorted_number": sorted_number, "quote": result["quote"]}
