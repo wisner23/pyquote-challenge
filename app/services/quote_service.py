@@ -1,11 +1,10 @@
 import config
-import requests
 from app.common.api_exception import ApiException
 
 
 class QuoteService(object):
 
-    def __init__(self, randomizer, request: requests):
+    def __init__(self, randomizer, request):
         self.rdn = randomizer
         self.request = request
 

@@ -1,23 +1,33 @@
 import unittest
-from resources import quotes
+from tests.resources.quotes import quotes
 from app.services.quote_service import QuoteService
+from tests import request_stub
 
 
 class QuoteServiceTest(unittest.TestCase):
 
-    def __init__(self):
-        self.quote_service = QuoteService(self.mock_random_value)
+    @classmethod
+    def setUpClass(cls):
+        cls.quote_service = QuoteService(cls.mock_random_value, request_stub)
 
-    def should_return_a_list(self):
-        self.assertListEqual(quotes, self.quote_service.get_quotes())
+    def test_should_return_a_list(self):
+        q = quotes
+        x = self.quote_service.get_quotes()
+        self.assertListEqual(q, x)
 
-    def should_return_a_quote(self):
+    def test_should_return_a_quote(self):
         number = 2
-        self.assertEquals(quotes[number], self.quote_service.get_quote_by_number(number))
+        current_result = self.quote_service.get_quote_by_number(number)
+        expected_result = {"quote": quotes[number]}
 
-    def should_return_a_random_quote(self):
-        self.assertEquals(quotes[2], self.quote_service.get_random_quote())
+        self.assertEqual(expected_result, current_result)
+
+    def test_should_return_a_random_quote(self):
+        current_result = self.quote_service.get_random_quote()
+
+        expected_result = {"sorted_number": self.mock_random_value(1, 2), "quote": current_result["quote"]}
+        self.assertEqual(expected_result, current_result)
 
     @staticmethod
-    def mock_random_value():
+    def mock_random_value(param1, param2):
         return 2
