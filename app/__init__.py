@@ -16,6 +16,6 @@ config.set_session_factory(session_factory)
 
 config.scan()
 
-app = config.make_wsgi_app()
+application = config.make_wsgi_app()
 
 
